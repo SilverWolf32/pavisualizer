@@ -1,0 +1,6 @@
+module PulseAudio [system] {
+	header "/usr/include/pulse/simple.h"
+	header "/usr/include/pulse/error.h"
+	link "pulse"
+	link "pulse-simple"
+}

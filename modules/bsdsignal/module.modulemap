@@ -1,0 +1,3 @@
+module BSDSignal [system] {
+	header "/usr/include/signal.h"
+}
