@@ -1,18 +1,23 @@
 import Foundation
 import CursesUI
+import NCurses
+
+NCurses.initDisplay()
 
 let view = InputResponsiveView()
-view.instantActions[" "] = { [unowned view] in
-	view.write("\u{7}", atPoint: (0, 0))
+view.instantActions[" "] = {
+	beep()
 }
 view.instantActions["q"] = {
 	NCurses.endDisplay()
 	print("Exiting.")
-	exit(0)
+	exit(64)
 }
 
-print("Setting up display [\(NCurses.screenCols)x\(NCurses.screenLines)]...");
-usleep(1_000_000);
-NCurses.initDisplay()
-usleep(1_000_000);
 view.draw()
+view.startAcceptingInput()
+
+// block
+while true {
+	usleep(10_000_000)
+}
