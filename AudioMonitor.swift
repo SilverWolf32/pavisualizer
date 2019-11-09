@@ -41,7 +41,8 @@ class AudioMonitor {
 				if result < 0 {
 					fputs("PulseAudio read failed: \(String(cString: pa_strerror(errorID)))", stderr)
 				}
-				fputs("\(data)", stderr)
+				fputs("\(data)\n", stderr)
+				usleep(self.refreshTime)
 			}
 		}
 	}
