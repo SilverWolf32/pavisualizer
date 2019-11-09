@@ -48,6 +48,8 @@ class AudioMonitor {
 	}
 	
 	deinit {
+		// NOTE: This is NOT necessarily called when the program exits!
+		// The AudioMonitor has to be set to nil somewhere.
 		pa_simple_free(pulseaudio)
 	}
 	
