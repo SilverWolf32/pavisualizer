@@ -24,4 +24,8 @@ class AudioMonitor {
 		}
 	}
 	
+	deinit {
+		pa_simple_free(pulseaudio)
+	}
+	
 }
