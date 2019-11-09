@@ -1,0 +1,9 @@
+.DS_Store
+*.dSYM
+*.sw?
+*.o
+Session.vim
+# ctags file
+tags
+# this is the build product
+/pavisualizer
