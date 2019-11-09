@@ -4,7 +4,7 @@ import NCurses
 
 NCurses.initDisplay()
 
-let view = InputResponsiveView()
+let view = VisualizerView()
 view.instantActions[" "] = {
 	beep()
 }
@@ -16,6 +16,8 @@ view.instantActions["q"] = {
 
 view.draw()
 view.startAcceptingInput()
+
+curs_set(0) // hide the cursor
 
 // block
 while true {
