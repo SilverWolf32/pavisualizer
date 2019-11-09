@@ -6,10 +6,14 @@ class VisualizerView: InputResponsiveView {
 	private var initializing = true
 	private var initColumn = 0
 	private var animationQueue: DispatchQueue? = nil
+	private var audioMonitor: AudioMonitor? = nil
 	
 	override func draw(refresh doRefresh: Bool = true) {
 		if animationQueue == nil {
 			animationQueue = DispatchQueue.global(qos: .userInteractive)
+			
+			self.audioMonitor = AudioMonitor()
+			self.audioMonitor?.startListening()
 			
 			animationQueue!.async { [unowned self] in
 				while (true) {
