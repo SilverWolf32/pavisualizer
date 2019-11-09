@@ -7,7 +7,7 @@ class AudioMonitor {
 	public var bufferSize = 1024
 	
 	private var pulseaudio: OpaquePointer? = nil
-	private var timingQueue: DispatchQueue? = nil
+	private var readQueue: DispatchQueue? = nil
 	
 	init() {
 		var sampleSpec = pa_sample_spec(format: PA_SAMPLE_S16LE, rate: 44100, channels: 1)
@@ -30,10 +30,10 @@ class AudioMonitor {
 	}
 	
 	func startListening() {
-		if self.timingQueue == nil {
-			self.timingQueue = DispatchQueue.global(qos: .userInteractive)
+		if self.readQueue == nil {
+			self.readQueue = DispatchQueue.global(qos: .userInteractive)
 		}
-		self.timingQueue!.async {
+		self.readQueue!.async {
 			while true {
 				var data: [UInt8] = Array(repeating: 0, count: self.bufferSize)
 				var errorID: Int32 = 0
