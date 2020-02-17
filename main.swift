@@ -20,7 +20,6 @@ view.startAcceptingInput()
 curs_set(0) // hide the cursor
 
 let audioMonitor = AudioMonitor()
-audioMonitor.bufferSize = 32
 
 audioMonitor.registerObserver(view)
 
