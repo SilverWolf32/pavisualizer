@@ -2,7 +2,6 @@ import Foundation
 import CursesUI
 import NCurses
 
-/*
 NCurses.initDisplay()
 
 let view = VisualizerView()
@@ -19,10 +18,12 @@ view.draw()
 view.startAcceptingInput()
 
 curs_set(0) // hide the cursor
-*/
 
 let audioMonitor = AudioMonitor()
 audioMonitor.bufferSize = 32
+
+audioMonitor.registerObserver(view)
+
 audioMonitor.startListening()
 
 // block

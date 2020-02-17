@@ -1,12 +1,14 @@
 import Foundation
 import CursesUI
 
-class VisualizerView: InputResponsiveView {
+class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	private var initializing = true
 	private var initColumn = 0
 	private var animationQueue: DispatchQueue? = nil
 	private var audioMonitor: AudioMonitor? = nil
+	
+	private var heights: [Int] = [];
 	
 	override func draw(refresh doRefresh: Bool = true) {
 		if animationQueue == nil {
@@ -34,6 +36,10 @@ class VisualizerView: InputResponsiveView {
 		if (doRefresh) {
 			self.refresh()
 		}
+	}
+	
+	func receiveSpectrumData(_ data: [Float]) {
+		
 	}
 	
 }

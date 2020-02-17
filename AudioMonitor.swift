@@ -7,8 +7,12 @@ class AudioMonitor {
 	public var refreshTime: UInt32 = 10_000 // µs
 	public var bufferSize = 1024
 	
+	private var listeners: [AudioMonitorDelegate] = []
+	
 	private var pulseaudio: OpaquePointer? = nil
 	private var readQueue: DispatchQueue? = nil
+	
+	private var currentFFTData: [Float] = []
 	
 	private var fftConfig: kiss_fft_cfg? = nil
 	
@@ -56,6 +60,23 @@ class AudioMonitor {
 		}
 	}
 	
+	func registerObserver(_ o: AudioMonitorDelegate) {
+		listeners.append(o)
+	}
+	func unregisterObserver(_ o: AudioMonitorDelegate) {
+		for i in 0..<listeners.count {
+			if listeners[i] === o {
+				listeners.remove(at: i)
+				break
+			}
+		}
+	}
+	func broadcastData() {
+		for listener in listeners {
+			listener.receiveSpectrumData(currentFFTData);
+		}
+	}
+	
 	// FFT stuff //
 	
 	func initFFT() {
@@ -81,11 +102,15 @@ class AudioMonitor {
 			return complex.r // real component
 		})
 		
-		print("\(out)")
+		// print("\(out)")
+		
+		currentFFTData = out
 		
 		// maaybe ARC can handle this?
 		// free(fftConfig)
 		fftConfig = nil
+		
+		broadcastData()
 	}
 	
 	deinit {
