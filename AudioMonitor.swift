@@ -89,7 +89,15 @@ class AudioMonitor {
 	func deinitFFT() {
 	}
 	
-	func doFFT(data rawData: [UInt8]) {
+	func doFFT(data dataIn: [UInt8]) {
+		// low-pass the data
+		// see https://kiritchatterjee.wordpress.com/2014/11/10/a-simple-digital-low-pass-filter-in-c/
+		var rawData = dataIn
+		for i in 1..<(rawData.count) {
+			let weight = 0.5
+			rawData[i] = UInt8(weight * Double(rawData[i]) + (1-weight) * Double(rawData[i-1]))
+		}
+		
 		fftConfig = kiss_fft_alloc(Int32(rawData.count), 0, nil, nil)
 		
 		let kissFFTIn: [kiss_fft_cpx] = rawData.map({ (n) in
@@ -104,17 +112,17 @@ class AudioMonitor {
 		}
 		
 		var out = kissFFTOut.map({ (complex) in
-			// return complex.r
-			return sqrt(pow(complex.r, 2) + pow(complex.i, 2))
+			return complex.r
+			// return sqrt(pow(complex.r, 2) + pow(complex.i, 2))
 		})
-		
-		// apparently it's symmetrical, only need the last half
-		out = Array(out[(out.count/2)...])
 		
 		// scale the FFT data
 		out = out.map({ (n) in
 			return n / Float(out.count)
 		})
+		
+		// apparently it's symmetrical, only need the last half
+		out = Array(out[(out.count/2)...])
 		
 		// print("\(out)")
 		
