@@ -16,14 +16,14 @@ class AudioMonitor {
 	
 	private var fftConfig: kiss_fft_cfg? = nil
 	
-	init() {
+	init(sink: String?) {
 		var sampleSpec = pa_sample_spec(format: PA_SAMPLE_S16LE, rate: 44100, channels: 1)
 		var errorID: Int32 = 0
 		pulseaudio = pa_simple_new(
 			nil,
 			"pavisualizer",
 			PA_STREAM_RECORD,
-			nil,
+			sink,
 			"Audio visualization",
 			&sampleSpec,
 			nil,
@@ -99,8 +99,8 @@ class AudioMonitor {
 		}
 		
 		var out = kissFFTOut.map({ (complex) in
-			return complex.r
-			// return sqrt(pow(complex.r, 2) + pow(complex.i, 2))
+			// return complex.r
+			return sqrt(pow(complex.r, 2) + pow(complex.i, 2))
 		})
 		
 		// scale the FFT data

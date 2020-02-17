@@ -2,6 +2,13 @@ import Foundation
 import CursesUI
 import NCurses
 
+var sink: String? = nil
+if CommandLine.arguments.count > 1 {
+	sink = CommandLine.arguments[1]
+}
+
+let audioMonitor = AudioMonitor(sink: sink)
+
 NCurses.initDisplay()
 
 let view = VisualizerView()
@@ -18,8 +25,6 @@ view.draw()
 view.startAcceptingInput()
 
 curs_set(0) // hide the cursor
-
-let audioMonitor = AudioMonitor()
 
 audioMonitor.registerObserver(view)
 
