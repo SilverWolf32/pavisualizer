@@ -33,13 +33,36 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			return
 		}
 		
+		if !initializing {
+			self.clear()
+			for i in 0..<heights.count {
+				let h = abs(heights[i]) + 1
+				for j in 0..<h {
+					self.write(".", atPoint: (self.height - 1 - j, i))
+				}
+			}
+		}
+		
 		if (doRefresh) {
 			self.refresh()
 		}
 	}
 	
 	func receiveSpectrumData(_ data: [Float]) {
+		// let scalingFactor = Float(self.height)
+		let scalingFactor = Float(1.0)
 		
+		heights.removeAll()
+		heights.reserveCapacity(self.width)
+		
+		for i in 0..<self.width {
+			let dataIndex = Int((Double(i) / Double(self.width)) * Double(data.count))
+			let dataPoint = data[dataIndex]
+			let h = Int(dataPoint * scalingFactor)
+			heights.append(h)
+		}
+		
+		self.draw()
 	}
 	
 }

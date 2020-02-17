@@ -98,8 +98,13 @@ class AudioMonitor {
 			}
 		}
 		
-		let out = kissFFTOut.map({ (complex) in
+		var out = kissFFTOut.map({ (complex) in
 			return complex.r // real component
+		})
+		
+		// scale the FFT data
+		out = out.map({ (n) in
+			return n / Float(out.count)
 		})
 		
 		// print("\(out)")
