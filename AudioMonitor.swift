@@ -46,7 +46,12 @@ class AudioMonitor {
 			while true {
 				var data: [UInt8] = Array(repeating: 0, count: self.bufferSize)
 				var errorID: Int32 = 0
-				let result = pa_simple_read(self.pulseaudio, &data, self.bufferSize, &errorID)
+				var result = pa_simple_flush(self.pulseaudio, &errorID)
+				if result < 0 {
+					fputs("PulseAudio read failed: \(String(cString: pa_strerror(errorID)))", stderr)
+				}
+				errorID = 0
+				result = pa_simple_read(self.pulseaudio, &data, self.bufferSize, &errorID)
 				if result < 0 {
 					fputs("PulseAudio read failed: \(String(cString: pa_strerror(errorID)))", stderr)
 				}
