@@ -103,6 +103,9 @@ class AudioMonitor {
 			return sqrt(pow(complex.r, 2) + pow(complex.i, 2))
 		})
 		
+		// apparently it's symmetrical, only need the last half
+		out = Array(out[(out.count/2)...])
+		
 		// scale the FFT data
 		out = out.map({ (n) in
 			return n / Float(out.count)
