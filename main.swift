@@ -8,6 +8,7 @@ if CommandLine.arguments.count > 1 {
 }
 
 let audioMonitor = AudioMonitor(sink: sink)
+audioMonitor.bufferSize = 4096
 
 NCurses.initDisplay()
 

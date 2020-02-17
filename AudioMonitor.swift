@@ -85,8 +85,12 @@ class AudioMonitor {
 	// FFT stuff //
 	
 	func initFFT() {
+		fftConfig = kiss_fft_alloc(Int32(self.bufferSize), 0, nil, nil)
 	}
 	func deinitFFT() {
+		// maaybe ARC can handle this?
+		// free(fftConfig)
+		fftConfig = nil
 	}
 	
 	func doFFT(data dataIn: [UInt8]) {
@@ -97,8 +101,6 @@ class AudioMonitor {
 			let weight = 0.5
 			rawData[i] = UInt8(weight * Double(rawData[i]) + (1-weight) * Double(rawData[i-1]))
 		}
-		
-		fftConfig = kiss_fft_alloc(Int32(rawData.count), 0, nil, nil)
 		
 		let kissFFTIn: [kiss_fft_cpx] = rawData.map({ (n) in
 			return kiss_fft_cpx(r: Float(n), i: 0)
@@ -127,10 +129,6 @@ class AudioMonitor {
 		// print("\(out)")
 		
 		currentFFTData = out
-		
-		// maaybe ARC can handle this?
-		// free(fftConfig)
-		fftConfig = nil
 		
 		broadcastData()
 	}

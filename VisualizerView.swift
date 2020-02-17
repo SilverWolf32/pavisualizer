@@ -46,7 +46,8 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	func receiveSpectrumData(_ data: [Float]) {
 		// let scalingFactor = Float(self.height)
-		let scalingFactor = Float(1.0)
+		// let scalingFactor = Float(1.0)
+		let scalingFactor = Float(self.height / 4)
 		
 		heights.removeAll()
 		heights.reserveCapacity(self.width)
