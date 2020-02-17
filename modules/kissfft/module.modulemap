@@ -1,0 +1,4 @@
+module KissFFT {
+	header "kissfft/kiss_fft.h"
+	// link ":modules/kissfft/kissfft/kiss_fft.o"
+}
