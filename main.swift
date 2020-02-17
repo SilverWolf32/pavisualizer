@@ -8,8 +8,9 @@ if CommandLine.arguments.count > 1 {
 }
 
 let audioMonitor = AudioMonitor(sink: sink)
-audioMonitor.bufferSize = 4096
+audioMonitor.bufferSize = 1024
 
+// /*
 NCurses.initDisplay()
 
 let view = VisualizerView()
@@ -28,6 +29,7 @@ view.startAcceptingInput()
 curs_set(0) // hide the cursor
 
 audioMonitor.registerObserver(view)
+// */
 
 audioMonitor.startListening()
 

@@ -121,6 +121,7 @@ class AudioMonitor {
 		// scale the FFT data
 		out = out.map({ (n) in
 			return n / Float(out.count)
+			// return n / sqrt(Float(out.count))
 		})
 		
 		// apparently it's symmetrical, only need the last half
