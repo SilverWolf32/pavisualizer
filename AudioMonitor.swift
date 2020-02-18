@@ -43,7 +43,7 @@ class AudioMonitor {
 		if self.readQueue == nil {
 			self.readQueue = DispatchQueue.global(qos: .userInteractive)
 		}
-		self.readQueue!.async {
+		self.readQueue!.async { [unowned self] in
 			while true {
 				var data: [UInt8] = Array(repeating: 0, count: self.bufferSize)
 				var errorID: Int32 = 0
@@ -59,7 +59,21 @@ class AudioMonitor {
 				// fputs("\(data)\n", stderr)
 				
 				// perform FFT
-				self.doFFT(data: data)
+				if data.max() ?? 0 == 0 {
+					// nothing playing, no need to bother with the FFT
+					var shouldBroadcast = true
+					if self.currentFFTData.max() ?? 0 == 0 {
+						// already broadcasted 0, no need to do it again
+						shouldBroadcast = false
+					}
+					// during FFT it's cut to only right half, so do the same here
+					self.currentFFTData = data[(data.count/2)...].map { Float($0) }
+					if shouldBroadcast {
+						self.broadcastData()
+					}
+				} else {
+					self.doFFT(data: data)
+				}
 				
 				usleep(self.refreshTime)
 			}
