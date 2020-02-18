@@ -6,6 +6,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var logarithmic = false
 	
 	public var barCharacter = "|"
+	public var baseCharacter = "."
 	
 	private var initializing = true
 	private var initColumn = 0
@@ -24,8 +25,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 						self.initializing = false
 						return
 					} else {
-						self.write(self.barCharacter, atPoint: (self.height - 1, self.initColumn))
-						self.refresh()
+						self.draw()
 					}
 					usleep(1_000_000 / UInt32(self.width)) // 1s total
 				}
@@ -33,10 +33,15 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			return
 		}
 		
+		self.clear()
+		
+		for i in 0...self.initColumn {
+			self.write(self.baseCharacter, atPoint: (self.height - 1, i))
+		}
+		
 		if !initializing {
-			self.clear()
 			for i in 0..<heights.count {
-				let h = abs(heights[i]) + 1
+				let h = abs(heights[i])
 				for j in 0..<h {
 					self.write(self.barCharacter, atPoint: (self.height - 1 - j, i))
 				}
