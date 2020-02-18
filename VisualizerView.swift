@@ -49,7 +49,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		let scalingFactor = Float(1.0)
 		// let scalingFactor = Float(self.height / 4)
 		
-		let logarithmic = false
+		let logarithmic = true
 		
 		// limit to useful frequencies
 		var data = dataIn
@@ -72,6 +72,10 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		heights = Array(repeating: 0, count: self.width)
 		
 		let linearStep = Double(data.count) / Double(self.width)
+		
+		let nOctaves = log2(Double(highFreqBound) / Double(lowFreqBound))
+		let logStep = (nOctaves - 1) / Double(self.width) + 1
+		
 		var lastIndex = 0.0
 		var currentIndex = linearStep
 		if logarithmic {
@@ -104,7 +108,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			lastIndex = currentIndex
 			if logarithmic {
 				heights[self.width-1 - i] = h
-				currentIndex /= 2.0
+				currentIndex /= logStep
 			} else {
 				heights[i] = h
 				currentIndex += linearStep
