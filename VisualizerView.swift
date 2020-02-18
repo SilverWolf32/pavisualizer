@@ -5,7 +5,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var audioMonitor: AudioMonitor? = nil
 	public var logarithmic = false
 	
-	public var barCharacter = "."
+	public var barCharacter = "|"
 	
 	private var initializing = true
 	private var initColumn = 0
