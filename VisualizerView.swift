@@ -53,21 +53,21 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		
 		// limit to useful frequencies
 		var data = dataIn
-		/* let lowFreqBound = 200
-		let highFreqBound = 10_000
+		let lowFreqBound = 50
+		let highFreqBound = 4000
 		let highestFreqInInput = 44100/2
 		if dataIn.count > 0 {
 			let lowIndex = Int(Double(lowFreqBound) / Double(highestFreqInInput) * Double(data.count))
 			var highIndex = Int(Double(highFreqBound) / Double(highestFreqInInput) * Double(data.count))
-			// data = Array(data[lowIndex..<highIndex])
-		} */
-		if data.count > 0 {
+			data = Array(data[lowIndex..<highIndex])
+		}
+		/* if data.count > 0 {
 			if logarithmic {
 				data = Array(data[...(data.count/4)])
 			} else {
 				data = Array(data[...(data.count/8)])
 			}
-		}
+		} */
 		
 		heights = Array(repeating: 0, count: self.width)
 		
