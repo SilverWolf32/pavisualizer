@@ -5,6 +5,8 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var audioMonitor: AudioMonitor? = nil
 	public var logarithmic = false
 	
+	public var barCharacter = "."
+	
 	private var initializing = true
 	private var initColumn = 0
 	private var animationQueue: DispatchQueue? = nil
@@ -22,7 +24,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 						self.initializing = false
 						return
 					} else {
-						self.write(".", atPoint: (self.height - 1, self.initColumn))
+						self.write(self.barCharacter, atPoint: (self.height - 1, self.initColumn))
 						self.refresh()
 					}
 					usleep(1_000_000 / UInt32(self.width)) // 1s total
@@ -36,7 +38,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			for i in 0..<heights.count {
 				let h = abs(heights[i]) + 1
 				for j in 0..<h {
-					self.write(".", atPoint: (self.height - 1 - j, i))
+					self.write(self.barCharacter, atPoint: (self.height - 1 - j, i))
 				}
 			}
 		}
