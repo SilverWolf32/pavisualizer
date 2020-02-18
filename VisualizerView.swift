@@ -46,16 +46,16 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	func receiveSpectrumData(_ dataIn: [Float]) {
 		// let scalingFactor = Float(self.height)
-		let scalingFactor = Float(1.0)
-		// let scalingFactor = Float(self.height / 4)
+		// let scalingFactor = Float(1.0)
+		let scalingFactor = Float(self.height / 4)
 		
-		let logarithmic = true
+		let logarithmic = false
 		
 		// limit to useful frequencies
 		var data = dataIn
-		let lowFreqBound = 50
+		let lowFreqBound = 100
 		let highFreqBound = 4000
-		let highestFreqInInput = 44100/2
+		let highestFreqInInput = (44100)/2
 		if dataIn.count > 0 {
 			let lowIndex = Int(Double(lowFreqBound) / Double(highestFreqInInput) * Double(data.count))
 			var highIndex = Int(Double(highFreqBound) / Double(highestFreqInInput) * Double(data.count))

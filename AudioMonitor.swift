@@ -6,6 +6,7 @@ class AudioMonitor {
 	
 	public var refreshTime: UInt32 = 10_000 // µs
 	public var bufferSize = 1024
+	public var sampleRate = 44100
 	
 	private var listeners: [AudioMonitorDelegate] = []
 	
@@ -17,7 +18,7 @@ class AudioMonitor {
 	private var fftConfig: kiss_fft_cfg? = nil
 	
 	init(sink: String?) {
-		var sampleSpec = pa_sample_spec(format: PA_SAMPLE_S16LE, rate: 44100, channels: 1)
+		var sampleSpec = pa_sample_spec(format: PA_SAMPLE_S16LE, rate: UInt32(sampleRate), channels: 1)
 		var errorID: Int32 = 0
 		pulseaudio = pa_simple_new(
 			nil,
@@ -34,11 +35,11 @@ class AudioMonitor {
 			fputs("PulseAudio connection failed: \(String(cString: pa_strerror(errorID)))", stderr)
 			return
 		}
-		
-		initFFT()
 	}
 	
 	func startListening() {
+		initFFT()
+		
 		if self.readQueue == nil {
 			self.readQueue = DispatchQueue.global(qos: .userInteractive)
 		}
