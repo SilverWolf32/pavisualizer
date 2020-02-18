@@ -15,8 +15,8 @@ audioMonitor.refreshTime = 0
 NCurses.initDisplay()
 
 let view = VisualizerView()
-view.instantActions[" "] = {
-	beep()
+view.instantActions[" "] = { [unowned view] in
+	view.logarithmic = !view.logarithmic
 }
 view.instantActions["q"] = {
 	NCurses.endDisplay()

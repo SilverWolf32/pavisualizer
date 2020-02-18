@@ -4,6 +4,7 @@ import CursesUI
 class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	public var audioMonitor: AudioMonitor? = nil
+	public var logarithmic = false
 	
 	private var initializing = true
 	private var initColumn = 0
@@ -51,8 +52,6 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		// let scalingFactor = Float(1.0)
 		let scalingFactor = Float(self.height / 4)
 		
-		let logarithmic = false
-		
 		// limit to useful frequencies
 		var data = dataIn
 		let lowFreqBound = 100
@@ -60,7 +59,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		let highestFreqInInput = (audioMonitor?.sampleRate ?? 44100)/2
 		if dataIn.count > 0 {
 			let lowIndex = Int(Double(lowFreqBound) / Double(highestFreqInInput) * Double(data.count))
-			var highIndex = Int(Double(highFreqBound) / Double(highestFreqInInput) * Double(data.count))
+			let highIndex = Int(Double(highFreqBound) / Double(highestFreqInInput) * Double(data.count))
 			data = Array(data[lowIndex..<highIndex])
 		}
 		/* if data.count > 0 {
