@@ -46,20 +46,32 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	func receiveSpectrumData(_ dataIn: [Float]) {
 		// let scalingFactor = Float(self.height)
-		// let scalingFactor = Float(1.0)
-		let scalingFactor = Float(self.height / 4)
+		let scalingFactor = Float(1.0)
+		// let scalingFactor = Float(self.height / 4)
 		
-		let logarithmic = true
+		let logarithmic = false
 		
-		// drop first half of data for better range
+		// limit to useful frequencies
 		var data = dataIn
+		/* let lowFreqBound = 200
+		let highFreqBound = 10_000
+		let highestFreqInInput = 44100/2
 		if dataIn.count > 0 {
-			data = Array(data[...(data.count/8)])
+			let lowIndex = Int(Double(lowFreqBound) / Double(highestFreqInInput) * Double(data.count))
+			var highIndex = Int(Double(highFreqBound) / Double(highestFreqInInput) * Double(data.count))
+			// data = Array(data[lowIndex..<highIndex])
+		} */
+		if data.count > 0 {
+			if logarithmic {
+				data = Array(data[...(data.count/4)])
+			} else {
+				data = Array(data[...(data.count/8)])
+			}
 		}
 		
 		heights = Array(repeating: 0, count: self.width)
 		
-		let linearStep = Double(data.count) / Double(self.width-1)
+		let linearStep = Double(data.count) / Double(self.width)
 		var lastIndex = 0.0
 		var currentIndex = linearStep
 		if logarithmic {
@@ -79,14 +91,14 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			// self.clear()
 			// self.write("\(thisBucket)", atPoint: (0, 0))
 			
-			var avg: Float = 0.0
+			var max: Float = 0.0
 			if thisBucket.count > 0 {
-				avg = thisBucket.reduce(0, +) / Float(thisBucket.count)
+				max = thisBucket.max()!
 			}
 			// fputs("\(avg)\n", stderr)
 			// self.write("\(avg)", atPoint: (1, 0))
 			
-			let h = Int(avg * scalingFactor)
+			let h = Int(max * scalingFactor)
 			// let h = Int(Float(thisBucket.count) / Float(data.count) * Float(self.height * 2))
 			
 			lastIndex = currentIndex

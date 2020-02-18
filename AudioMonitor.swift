@@ -102,6 +102,8 @@ class AudioMonitor {
 			rawData[i] = UInt8(weight * Double(rawData[i]) + (1-weight) * Double(rawData[i-1]))
 		}
 		
+		// print("\(rawData)\n")
+		
 		let kissFFTIn: [kiss_fft_cpx] = rawData.map({ (n) in
 			return kiss_fft_cpx(r: Float(n), i: 0)
 		})
