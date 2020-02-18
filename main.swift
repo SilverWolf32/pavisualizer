@@ -1,5 +1,4 @@
 import Foundation
-import CursesUI
 import NCurses
 
 var sink: String? = nil
@@ -11,7 +10,6 @@ let audioMonitor = AudioMonitor(sink: sink)
 audioMonitor.bufferSize = 1024*2
 audioMonitor.refreshTime = 0
 
-// /*
 NCurses.initDisplay()
 
 let view = VisualizerView()
@@ -32,7 +30,6 @@ view.startAcceptingInput()
 curs_set(0) // hide the cursor
 
 audioMonitor.registerObserver(view)
-// */
 
 audioMonitor.startListening()
 

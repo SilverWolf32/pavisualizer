@@ -1,5 +1,4 @@
 import Foundation
-import CursesUI
 
 class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
