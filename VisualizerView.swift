@@ -3,6 +3,8 @@ import CursesUI
 
 class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
+	public var audioMonitor: AudioMonitor? = nil
+	
 	private var initializing = true
 	private var initColumn = 0
 	private var animationQueue: DispatchQueue? = nil
@@ -55,7 +57,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		var data = dataIn
 		let lowFreqBound = 100
 		let highFreqBound = 4000
-		let highestFreqInInput = (44100)/2
+		let highestFreqInInput = (audioMonitor?.sampleRate ?? 44100)/2
 		if dataIn.count > 0 {
 			let lowIndex = Int(Double(lowFreqBound) / Double(highestFreqInInput) * Double(data.count))
 			var highIndex = Int(Double(highFreqBound) / Double(highestFreqInInput) * Double(data.count))

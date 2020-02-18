@@ -24,6 +24,8 @@ view.instantActions["q"] = {
 	exit(64)
 }
 
+view.audioMonitor = audioMonitor
+
 view.draw()
 view.startAcceptingInput()
 
