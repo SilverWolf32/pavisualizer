@@ -40,6 +40,9 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 		
 		if !initializing {
+			// make sure the base dots are drawn all the way across
+			self.initColumn = self.width
+			
 			for i in 0..<heights.count {
 				let h = abs(heights[i])
 				for j in 0..<h {
