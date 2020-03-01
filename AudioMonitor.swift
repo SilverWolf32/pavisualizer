@@ -15,6 +15,7 @@ class AudioMonitor {
 	
 	private var currentRawData: [UInt8] = []
 	private var currentFFTData: [Float] = []
+	private var lastBroadcastedData: [UInt8] = []
 	
 	private var fftConfig: kiss_fft_cfg? = nil
 	
@@ -65,7 +66,7 @@ class AudioMonitor {
 				if data.max() ?? 0 == 0 {
 					// nothing playing, no need to bother with the FFT
 					var shouldBroadcast = true
-					if self.currentFFTData.max() ?? 0 == 0 {
+					if self.lastBroadcastedData.max() ?? 0 == 0 {
 						// already broadcasted 0, no need to do it again
 						shouldBroadcast = false
 					}
@@ -108,6 +109,7 @@ class AudioMonitor {
 		}
 	}
 	func broadcastData() {
+		lastBroadcastedData = currentRawData
 		for listener in listeners {
 			listener.receiveWaveformData(currentRawData)
 			if listener.shouldReceiveFFT() {
