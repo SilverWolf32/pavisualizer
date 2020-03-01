@@ -11,6 +11,8 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var baseCharacter = "."
 	public var baseCharacterW = "-" // for the waveform
 	
+	public var maxWaveformHeight = 16
+	
 	private var initializing = true
 	private var initColumn = 0
 	private var animationQueue: DispatchQueue? = nil
@@ -75,7 +77,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			return
 		}
 		
-		let scalingFactor = 1.0 / 512 * Double(self.height)
+		let scalingFactor = 1.0 / 512 * Double(min(self.height, self.maxWaveformHeight))
 		
 		heights = Array(repeating: 0, count: self.width)
 		
