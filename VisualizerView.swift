@@ -75,7 +75,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			return
 		}
 		
-		let scalingFactor = 1.0/Double(self.height)
+		let scalingFactor = 1.0 / 512 * Double(self.height)
 		
 		heights = Array(repeating: 0, count: self.width)
 		
