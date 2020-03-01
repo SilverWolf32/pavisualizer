@@ -7,6 +7,7 @@
 
 protocol AudioMonitorDelegate: class {
 	
+	func receiveWaveformData(_ data: [UInt8]);
 	func receiveSpectrumData(_ data: [Float]);
 	
 }

@@ -5,8 +5,11 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var audioMonitor: AudioMonitor? = nil
 	public var logarithmic = false
 	
+	public var waveform = false
+	
 	public var barCharacter = "|"
 	public var baseCharacter = "."
+	public var baseCharacterW = "-" // for the waveform
 	
 	private var initializing = true
 	private var initColumn = 0
@@ -36,7 +39,11 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		self.clear()
 		
 		for i in 0...self.initColumn {
-			self.write(self.baseCharacter, atPoint: (self.height - 1, i))
+			if waveform {
+				self.write(self.baseCharacterW, atPoint: (self.height / 2, i))
+			} else {
+				self.write(self.baseCharacter, atPoint: (self.height - 1, i))
+			}
 		}
 		
 		if !initializing {
@@ -45,8 +52,15 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			
 			for i in 0..<heights.count {
 				let h = abs(heights[i])
-				for j in 0..<h {
-					self.write(self.barCharacter, atPoint: (self.height - 1 - j, i))
+				if waveform {
+					for j in 0..<h {
+						self.write(self.barCharacter, atPoint: (self.height / 2 - j, i))
+						self.write(self.barCharacter, atPoint: (self.height / 2 + j, i))
+					}
+				} else {
+					for j in 0..<h {
+						self.write(self.barCharacter, atPoint: (self.height - 1 - j, i))
+					}
 				}
 			}
 		}
@@ -56,7 +70,30 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 	}
 	
+	func receiveWaveformData(_ data: [UInt8]) {
+		if waveform == false {
+			return
+		}
+		
+		let scalingFactor = 1.0/Double(self.height)
+		
+		heights = Array(repeating: 0, count: self.width)
+		
+		for i in 0..<self.width {
+			// let dataIndex = Int(Double(i) / Double(self.width) * Double(data.count-1))
+			let dataIndex = i*2
+			let h = Int(Double(data[dataIndex]) * scalingFactor)
+			heights[i] = h
+		}
+		
+		self.draw()
+	}
+	
 	func receiveSpectrumData(_ dataIn: [Float]) {
+		if waveform == true {
+			return
+		}
+		
 		let scalingFactor = Float(self.height / 4)
 		
 		// limit to useful frequencies

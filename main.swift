@@ -14,7 +14,8 @@ NCurses.initDisplay()
 
 let view = VisualizerView()
 view.instantActions[" "] = { [unowned view] in
-	view.logarithmic = !view.logarithmic
+	// view.logarithmic = !view.logarithmic
+	view.waveform = !view.waveform
 }
 view.instantActions["q"] = {
 	NCurses.endDisplay()

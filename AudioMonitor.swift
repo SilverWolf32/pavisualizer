@@ -13,6 +13,7 @@ class AudioMonitor {
 	private var pulseaudio: OpaquePointer? = nil
 	private var readQueue: DispatchQueue? = nil
 	
+	private var currentRawData: [UInt8] = []
 	private var currentFFTData: [Float] = []
 	
 	private var fftConfig: kiss_fft_cfg? = nil
@@ -58,6 +59,8 @@ class AudioMonitor {
 				}
 				// fputs("\(data)\n", stderr)
 				
+				self.currentRawData = data
+				
 				// perform FFT
 				if data.max() ?? 0 == 0 {
 					// nothing playing, no need to bother with the FFT
@@ -93,7 +96,8 @@ class AudioMonitor {
 	}
 	func broadcastData() {
 		for listener in listeners {
-			listener.receiveSpectrumData(currentFFTData);
+			listener.receiveWaveformData(currentRawData)
+			listener.receiveSpectrumData(currentFFTData)
 		}
 	}
 	
