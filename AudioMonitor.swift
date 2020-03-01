@@ -75,7 +75,20 @@ class AudioMonitor {
 						self.broadcastData()
 					}
 				} else {
-					self.doFFT(data: data)
+					// should we do an FFT?
+					var shouldFFT = false
+					for listener in self.listeners {
+						if listener.shouldReceiveFFT() {
+							shouldFFT = true
+							break
+						}
+					}
+					
+					if shouldFFT {
+						self.doFFT(data: data)
+					} else {
+						self.broadcastData()
+					}
 				}
 				
 				usleep(self.refreshTime)
@@ -97,7 +110,9 @@ class AudioMonitor {
 	func broadcastData() {
 		for listener in listeners {
 			listener.receiveWaveformData(currentRawData)
-			listener.receiveSpectrumData(currentFFTData)
+			if listener.shouldReceiveFFT() {
+				listener.receiveSpectrumData(currentFFTData)
+			}
 		}
 	}
 	

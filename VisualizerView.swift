@@ -17,7 +17,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	private var initColumn = 0
 	private var animationQueue: DispatchQueue? = nil
 	
-	private var heights: [Int] = [];
+	private var heights: [Int] = []
 	
 	override func draw(refresh doRefresh: Bool = true) {
 		if animationQueue == nil {
@@ -150,6 +150,10 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 		
 		self.draw()
+	}
+	
+	func shouldReceiveFFT() -> Bool {
+		return !self.waveform // don't receive FFTs when in waveform mode
 	}
 	
 }
