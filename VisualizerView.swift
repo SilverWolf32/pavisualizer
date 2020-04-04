@@ -6,6 +6,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var logarithmic = false
 	
 	public var waveform = false
+	public var slowmode = true
 	
 	public var barCharacter = "|"
 	public var baseCharacter = "."
@@ -18,6 +19,10 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	private var animationQueue: DispatchQueue? = nil
 	
 	private var heights: [Int] = []
+	
+	private var historicalSpectrumData: [[Float]] = []
+	private var historicalWaveformData: [[Float]] = []
+	private var smoothingWindow = 64
 	
 	override func draw(refresh doRefresh: Bool = true) {
 		if animationQueue == nil {
@@ -109,6 +114,14 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			data = Array(data[lowIndex..<highIndex])
 		}
 		
+		historicalSpectrumData.append(data)
+		if historicalSpectrumData.count > smoothingWindow {
+			historicalSpectrumData.removeFirst()
+		}
+		if slowmode {
+			data = calculateMovingAverage(historicalSpectrumData)
+		}
+		
 		heights = Array(repeating: 0, count: self.width)
 		
 		let linearStep = Double(data.count) / Double(self.width)
@@ -154,6 +167,23 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	func shouldReceiveFFT() -> Bool {
 		return !self.waveform // don't receive FFTs when in waveform mode
+	}
+	
+	private func calculateMovingAverage(_ historicalData: [[Float]]) -> [Float] {
+		var data: [Float] = Array(repeating: 0, count: historicalData[0].count)
+		// calculate weighted average of the historical spectrum data
+		// see https://en.wikipedia.org/wiki/Moving_average#Weighted_moving_average
+		// see https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/wma
+		for i in 0..<data.count {
+			data[i] = 0
+			let n = historicalData.count
+			for j in 1...n {
+				data[i] += Float(j) * historicalData[j-1][i]
+			}
+			data[i] *= Float(n)/4.0
+			data[i] /= Float((n*(n+1))/2)
+		}
+		return data
 	}
 	
 }

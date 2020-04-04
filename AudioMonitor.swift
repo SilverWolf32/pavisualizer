@@ -68,7 +68,7 @@ class AudioMonitor {
 					var shouldBroadcast = true
 					if self.lastBroadcastedData.max() ?? 0 == 0 {
 						// already broadcasted 0, no need to do it again
-						shouldBroadcast = false
+						// shouldBroadcast = false
 					}
 					// during FFT it's cut to only right half, so do the same here
 					self.currentFFTData = data[(data.count/2)...].map { Float($0) }
