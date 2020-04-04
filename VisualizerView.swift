@@ -24,7 +24,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	private var historicalWaveformData: [[Float]] = []
 	private var smoothingWindow = [
 		"spectrum": 64,
-		"waveform": 4
+		"waveform": 2
 	]
 	
 	override func draw(refresh doRefresh: Bool = true) {

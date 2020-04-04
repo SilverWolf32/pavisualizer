@@ -65,7 +65,7 @@ class AudioMonitor {
 				// perform FFT
 				if data.max() ?? 0 == 0 {
 					// nothing playing, no need to bother with the FFT
-					var shouldBroadcast = true
+					let shouldBroadcast = true
 					if self.lastBroadcastedData.max() ?? 0 == 0 {
 						// already broadcasted 0, no need to do it again
 						// shouldBroadcast = false

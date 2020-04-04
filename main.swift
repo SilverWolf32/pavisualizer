@@ -18,6 +18,9 @@ view.instantActions[" "] = { [unowned view] in
 	view.waveform = !view.waveform
 	view.draw()
 }
+view.instantActions["s"] = { [unowned view] in
+	view.slowmode = !view.slowmode
+}
 view.instantActions["q"] = {
 	NCurses.endDisplay()
 	print("Exiting.")
