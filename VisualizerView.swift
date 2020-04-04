@@ -7,6 +7,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	public var waveform = false
 	public var slowmode = true
+	public var smoothSpectrum = false
 	
 	public var barCharacter = "|"
 	public var baseCharacter = "."
@@ -26,6 +27,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		"spectrum": 64,
 		"waveform": 2
 	]
+	private var spectrumLowPassFactor = 0.3
 	
 	override func draw(refresh doRefresh: Bool = true) {
 		if animationQueue == nil {
@@ -135,6 +137,16 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		if slowmode {
 			data = calculateMovingAverage(historicalSpectrumData)
 			data = data.map { $0 * Float(historicalSpectrumData.count)/4.0 }
+		}
+		
+		if smoothSpectrum {
+			// low-pass the data
+			// see https://kiritchatterjee.wordpress.com/2014/11/10/a-simple-digital-low-pass-filter-in-c/
+			let weight = spectrumLowPassFactor
+			for i in 1..<(data.count) {
+				data[i] = Float(weight * Double(data[i]) + (1-weight) * Double(data[i-1]))
+			}
+			data = data.map { $0 * Float(log2(1/spectrumLowPassFactor)) }
 		}
 		
 		heights = Array(repeating: 0, count: self.width)
