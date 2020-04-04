@@ -149,6 +149,18 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			data = data.map { $0 * Float(log2(1/spectrumLowPassFactor)) }
 		}
 		
+		if data.count < self.width {
+			// make more data!
+			// interpolate between existing values
+			var newData: [Float] = []
+			newData.reserveCapacity(data.count * 2)
+			for i in 0..<data.count-1 {
+				newData.append(data[i])
+				newData.append((data[i] + data[i+1])/2)
+			}
+			data = newData
+		}
+		
 		heights = Array(repeating: 0, count: self.width)
 		
 		let linearStep = Double(data.count) / Double(self.width)
