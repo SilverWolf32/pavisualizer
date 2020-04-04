@@ -22,7 +22,10 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	private var historicalSpectrumData: [[Float]] = []
 	private var historicalWaveformData: [[Float]] = []
-	private var smoothingWindow = 64
+	private var smoothingWindow = [
+		"spectrum": 64,
+		"waveform": 4
+	]
 	
 	override func draw(refresh doRefresh: Bool = true) {
 		if animationQueue == nil {
@@ -77,7 +80,18 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 	}
 	
-	func receiveWaveformData(_ data: [UInt8]) {
+	func receiveWaveformData(_ dataIn: [UInt8]) {
+		var data = dataIn.map { Float($0) }
+		historicalWaveformData.append(data)
+		if historicalWaveformData.count > smoothingWindow["waveform"]! {
+			historicalWaveformData.removeFirst()
+		}
+		if slowmode {
+			data = calculateMovingAverage(historicalWaveformData)
+			// data = data.map { $0 * Float(historicalWaveformData.count)/2.0 }
+			// data = data.map { $0 * 2 }
+		}
+		
 		if waveform == false {
 			return
 		}
@@ -115,11 +129,12 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 		
 		historicalSpectrumData.append(data)
-		if historicalSpectrumData.count > smoothingWindow {
+		if historicalSpectrumData.count > smoothingWindow["spectrum"]! {
 			historicalSpectrumData.removeFirst()
 		}
 		if slowmode {
 			data = calculateMovingAverage(historicalSpectrumData)
+			data = data.map { $0 * Float(historicalSpectrumData.count)/4.0 }
 		}
 		
 		heights = Array(repeating: 0, count: self.width)
@@ -180,7 +195,6 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			for j in 1...n {
 				data[i] += Float(j) * historicalData[j-1][i]
 			}
-			data[i] *= Float(n)/4.0
 			data[i] /= Float((n*(n+1))/2)
 		}
 		return data
