@@ -43,7 +43,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 					} else {
 						self.draw()
 					}
-					usleep(1_000_000 / UInt32(self.width)) // 1s total
+					usleep(500_000 / UInt32(self.width)) // 1s total
 				}
 			}
 			return
