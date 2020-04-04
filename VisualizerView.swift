@@ -149,7 +149,14 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			while historicalSpectrumData.count > s {
 				historicalSpectrumData.removeFirst()
 			}
+			
+			let oldData = data
 			data = calculateMovingAverage(historicalSpectrumData)
+			
+			for i in 0..<data.count {
+				// is the current data higher than the old average?
+				data[i] = max(data[i], oldData[i])
+			}
 		}
 		
 		if smoothSpectrum {
