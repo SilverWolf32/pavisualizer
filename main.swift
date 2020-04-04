@@ -24,6 +24,9 @@ view.instantActions["s"] = { [unowned view] in
 view.instantActions["a"] = { [unowned view] in
 	view.smoothSpectrum = !view.smoothSpectrum
 }
+view.instantActions["h"] = { [unowned view] in
+	view.highPassWaveform = !view.highPassWaveform
+}
 view.instantActions["q"] = {
 	NCurses.endDisplay()
 	print("Exiting.")

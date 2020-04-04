@@ -8,6 +8,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var waveform = false
 	public var slowmode = true
 	public var smoothSpectrum = false
+	public var highPassWaveform = false
 	
 	public var barCharacter = "|"
 	public var baseCharacter = "."
@@ -96,6 +97,20 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		
 		if waveform == false {
 			return
+		}
+		
+		// high pass the data
+		// otherwise at only low frequencies it can show large blocks of full and empty
+		// see https://en.wikipedia.org/wiki/High-pass_filter#Algorithmic_implementation
+		if highPassWaveform {
+			var newData: [Float] = Array(repeating: 0, count: data.count)
+			let α = Float(0.95)
+			for i in 1..<data.count {
+				newData[i] = α * (newData[i-1] + data[i] - data[i-1])
+			}
+			newData = newData.map { $0 / (0.8*α) }
+			newData[0] = data[0]
+			data = newData
 		}
 		
 		let scalingFactor = 1.0 / 512 * Double(min(self.height, self.maxWaveformHeight))
