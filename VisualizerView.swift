@@ -25,7 +25,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	private var historicalSpectrumData: [[Float]] = []
 	private var historicalWaveformData: [[Float]] = []
 	private var smoothingWindow = [
-		"spectrum": 64,
+		"spectrum": 8,
 		"waveform": 2
 	]
 	private var spectrumLowPassFactor = 0.3
@@ -151,7 +151,6 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 		if slowmode {
 			data = calculateMovingAverage(historicalSpectrumData)
-			data = data.map { $0 * Float(historicalSpectrumData.count)/4.0 }
 		}
 		
 		if smoothSpectrum {

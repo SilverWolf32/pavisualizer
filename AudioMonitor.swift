@@ -152,8 +152,8 @@ class AudioMonitor {
 		}
 		
 		var out = kissFFTOut.map({ (complex) in
-			return complex.r
-			// return sqrt(pow(complex.r, 2) + pow(complex.i, 2))
+			// return complex.r
+			return sqrt(pow(complex.r, 2) + pow(complex.i, 2))
 		})
 		
 		// scale the FFT data
