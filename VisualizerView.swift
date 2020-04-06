@@ -107,7 +107,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		
 		for i in 0..<self.width {
 			// let dataIndex = Int(Double(i) / Double(self.width) * Double(data.count-1))
-			let dataIndex = i*2
+			let dataIndex = i
 			let h = Int(Double(data[dataIndex]) * scalingFactor)
 			heights[i] = h
 		}
