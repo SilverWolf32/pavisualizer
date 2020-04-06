@@ -6,7 +6,7 @@
 MODULEIMPORT=-I${PWD}/modules/ncurses -I${PWD}/modules/pulseaudio -I${PWD}/modules/kissfft
 OBJECTIMPORT=modules/kissfft/kissfft/kiss_fft.o
 
-pavisualizer: *.swift
+pavisualizer: *.swift CursesUI/*.swift
 	swiftc -g -o pavisualizer *.swift CursesUI/*.swift ${MODULEIMPORT} ${OBJECTIMPORT}
 
 kissfft:

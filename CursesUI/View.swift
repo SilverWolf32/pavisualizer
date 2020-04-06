@@ -87,7 +87,7 @@ open class View {
 	}
 	
 	public func clear() {
-		werase(window)
+		wclear(window)
 	}
 	public func refresh() {
 		wrefresh(window)
