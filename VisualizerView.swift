@@ -6,6 +6,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var logarithmic = false
 	
 	public var waveform = false
+	public var waveformSolid = false
 	public var slowmode = true
 	public var smoothSpectrum = false
 	public var highPassWaveform = false
@@ -13,6 +14,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var barCharacter = "|"
 	public var baseCharacter = "."
 	public var baseCharacterW = "-" // for the waveform
+	public var waveformCharacter = "#" // for the hollow waveform
 	
 	public var maxWaveformHeight = 16
 	
@@ -49,9 +51,9 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		self.clear()
 		
 		for i in 0...self.initColumn {
-			if waveform {
+			if waveform && waveformSolid {
 				self.write(self.baseCharacterW, atPoint: (self.height / 2, i))
-			} else {
+			} else if !waveform {
 				self.write(self.baseCharacter, atPoint: (self.height - 1, i))
 			}
 		}
@@ -61,14 +63,19 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			self.initColumn = self.width
 			
 			for i in 0..<heights.count {
-				let h = abs(heights[i])
+				var h = heights[i]
 				if waveform {
-					for j in 0..<h {
-						self.write(self.barCharacter, atPoint: (self.height / 2 - j, i))
-						self.write(self.barCharacter, atPoint: (self.height / 2 + j, i))
+					if waveformSolid {
+						h = abs(h)
+						for j in 0..<h {
+							self.write(self.barCharacter, atPoint: (self.height / 2 - j, i))
+							self.write(self.barCharacter, atPoint: (self.height / 2 + j, i))
+						}
+					} else {
+						self.write(self.waveformCharacter, atPoint: (self.height / 2 - h, i))
 					}
 				} else {
-					for j in 0..<h {
+					for j in 0..<abs(h) {
 						self.write(self.barCharacter, atPoint: (self.height - 1 - j, i))
 					}
 				}

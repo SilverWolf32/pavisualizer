@@ -18,6 +18,10 @@ view.instantActions[" "] = { [unowned view] in
 	view.waveform = !view.waveform
 	view.draw()
 }
+view.instantActions["w"] = { [unowned view] in
+	view.waveformSolid = !view.waveformSolid
+	view.draw()
+}
 view.instantActions["s"] = { [unowned view] in
 	view.slowmode = !view.slowmode
 }
