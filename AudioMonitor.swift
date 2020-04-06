@@ -13,9 +13,9 @@ class AudioMonitor {
 	private var pulseaudio: OpaquePointer? = nil
 	private var readQueue: DispatchQueue? = nil
 	
-	private var currentRawData: [UInt8] = []
+	private var currentRawData: [Int16] = []
 	private var currentFFTData: [Float] = []
-	private var lastBroadcastedData: [UInt8] = []
+	private var lastBroadcastedData: [Int16] = []
 	
 	private var fftConfig: kiss_fft_cfg? = nil
 	
@@ -47,16 +47,16 @@ class AudioMonitor {
 		}
 		self.readQueue!.async { [unowned self] in
 			while true {
-				var data: [UInt8] = Array(repeating: 0, count: self.bufferSize)
+				var data: [Int16] = Array(repeating: 0, count: self.bufferSize/2)
 				var errorID: Int32 = 0
 				var result = pa_simple_flush(self.pulseaudio, &errorID)
 				if result < 0 {
-					fputs("PulseAudio read failed: \(String(cString: pa_strerror(errorID)))", stderr)
+					fputs("PulseAudio read failed: \(String(cString: pa_strerror(errorID)))\n", stderr)
 				}
 				errorID = 0
 				result = pa_simple_read(self.pulseaudio, &data, self.bufferSize, &errorID)
 				if result < 0 {
-					fputs("PulseAudio read failed: \(String(cString: pa_strerror(errorID)))", stderr)
+					fputs("PulseAudio read failed: \(String(cString: pa_strerror(errorID)))\n", stderr)
 				}
 				// fputs("\(data)\n", stderr)
 				
@@ -70,8 +70,8 @@ class AudioMonitor {
 						// already broadcasted 0, no need to do it again
 						// shouldBroadcast = false
 					}
-					// during FFT it's cut to only right half, so do the same here
-					self.currentFFTData = data[(data.count/2)...].map { Float($0) }
+					// during FFT it's cut to only left half, so do the same here
+					self.currentFFTData = data[...(data.count/2)].map { Float($0) }
 					if shouldBroadcast {
 						self.broadcastData()
 					}
@@ -121,7 +121,7 @@ class AudioMonitor {
 	// FFT stuff //
 	
 	func initFFT() {
-		fftConfig = kiss_fft_alloc(Int32(self.bufferSize), 0, nil, nil)
+		fftConfig = kiss_fft_alloc(Int32(self.bufferSize/2), 0, nil, nil)
 	}
 	func deinitFFT() {
 		// maaybe ARC can handle this?
@@ -129,22 +129,24 @@ class AudioMonitor {
 		fftConfig = nil
 	}
 	
-	func doFFT(data dataIn: [UInt8]) {
+	func doFFT(data dataIn: [Int16]) {
 		// low-pass the data
 		// see https://kiritchatterjee.wordpress.com/2014/11/10/a-simple-digital-low-pass-filter-in-c/
-		var rawData = dataIn
-		for i in 1..<(rawData.count) {
+		// var rawData = dataIn
+		/* for i in 1..<(rawData.count) {
 			let weight = 0.5
-			rawData[i] = UInt8(weight * Double(rawData[i]) + (1-weight) * Double(rawData[i-1]))
-		}
+			rawData[i] = Int16(weight * Double(rawData[i]) + (1-weight) * Double(rawData[i-1]))
+		} */
 		
 		// print("\(rawData)\n")
 		
-		let kissFFTIn: [kiss_fft_cpx] = rawData.map({ (n) in
-			return kiss_fft_cpx(r: Float(n), i: 0)
+		let kissFFTIn: [kiss_fft_cpx] = dataIn.map({ (n) in
+			let normalized = Float(n) / Float(Int16.max)
+			// print("\(normalized) ", terminator: "")
+			return kiss_fft_cpx(r: normalized, i: 0)
 		})
 		
-		var kissFFTOut = Array(repeating: kiss_fft_cpx(r: 0, i: 0), count: rawData.count)
+		var kissFFTOut = Array(repeating: kiss_fft_cpx(r: 0, i: 0), count: dataIn.count)
 		kissFFTIn.withUnsafeBufferPointer { (fftIn) in
 			kissFFTOut.withUnsafeMutableBufferPointer { (fftOut) in
 				kiss_fft(fftConfig, fftIn.baseAddress, fftOut.baseAddress)
@@ -157,13 +159,13 @@ class AudioMonitor {
 		})
 		
 		// scale the FFT data
-		out = out.map({ (n) in
+		/* out = out.map({ (n) in
 			return n / Float(out.count)
 			// return n / sqrt(Float(out.count))
-		})
+		}) */
 		
-		// apparently it's symmetrical, only need the last half
-		out = Array(out[(out.count/2)...])
+		// apparently it's symmetrical, only need the first half
+		out = Array(out[...(out.count/2)])
 		
 		// print("\(out)")
 		

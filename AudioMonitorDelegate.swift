@@ -7,7 +7,7 @@
 
 protocol AudioMonitorDelegate: class {
 	
-	func receiveWaveformData(_ data: [UInt8])
+	func receiveWaveformData(_ data: [Int16])
 	func receiveSpectrumData(_ data: [Float])
 	func shouldReceiveFFT() -> Bool
 	

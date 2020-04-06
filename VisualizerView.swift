@@ -26,7 +26,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	private var historicalWaveformData: [[Float]] = []
 	private var smoothingWindow = [
 		"spectrum": 8,
-		"waveform": 2
+		"waveform": 8
 	]
 	private var spectrumLowPassFactor = 0.3
 	
@@ -83,7 +83,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 	}
 	
-	func receiveWaveformData(_ dataIn: [UInt8]) {
+	func receiveWaveformData(_ dataIn: [Int16]) {
 		var data = dataIn.map { Float($0) }
 		historicalWaveformData.append(data)
 		if historicalWaveformData.count > smoothingWindow["waveform"]! {
@@ -113,7 +113,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			data = newData
 		}
 		
-		let scalingFactor = 1.0 / 512 * Double(min(self.height, self.maxWaveformHeight))
+		let scalingFactor = 1.0 / 16384 * Double(min(self.height, self.maxWaveformHeight))
 		
 		heights = Array(repeating: 0, count: self.width)
 		
@@ -132,12 +132,12 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			return
 		}
 		
-		let scalingFactor = Float(self.height / 4)
+		let scalingFactor = Float(self.height / 16)
 		
 		// limit to useful frequencies
 		var data = dataIn
-		let lowFreqBound = 100
-		let highFreqBound = 4000
+		let lowFreqBound = 0
+		let highFreqBound = 6000
 		let highestFreqInInput = (audioMonitor?.sampleRate ?? 44100)/2
 		if dataIn.count > 0 {
 			let lowIndex = Int(Double(lowFreqBound) / Double(highestFreqInInput) * Double(data.count))
