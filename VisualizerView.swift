@@ -120,7 +120,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			return
 		}
 		
-		let scalingFactor = Float(self.height / 16)
+		let scalingFactor = Float(self.height / 8)
 		
 		// limit to useful frequencies
 		var data = dataIn
