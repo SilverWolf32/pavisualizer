@@ -8,12 +8,15 @@ if CommandLine.arguments.count > 1 {
 
 let audioMonitor = AudioMonitor()
 audioMonitor.bufferSize = 1024*2
-// audioMonitor.sampleRate = 44100 / 2
-// audioMonitor.refreshTime = 0
+audioMonitor.sampleRate = 44100 / 2
+audioMonitor.refreshTime = UInt32(1_000_000/audioMonitor.sampleRate*audioMonitor.bufferSize/8)
 
 NCurses.initDisplay()
 
 let view = VisualizerView()
+
+view.smoothingWindow /= 2
+
 view.instantActions[" "] = { [unowned view] in
 	// view.logarithmic = !view.logarithmic
 	view.waveform = !view.waveform
