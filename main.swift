@@ -6,8 +6,9 @@ if CommandLine.arguments.count > 1 {
 	sink = CommandLine.arguments[1]
 }
 
-let audioMonitor = AudioMonitor(sink: sink)
+let audioMonitor = AudioMonitor()
 audioMonitor.bufferSize = 1024*2
+// audioMonitor.sampleRate = 44100 / 2
 // audioMonitor.refreshTime = 0
 
 NCurses.initDisplay()
@@ -31,6 +32,9 @@ view.instantActions["a"] = { [unowned view] in
 view.instantActions["h"] = { [unowned view] in
 	view.highPassWaveform = !view.highPassWaveform
 }
+view.instantActions["l"] = { [unowned view] in
+	view.logarithmic = !view.logarithmic
+}
 view.instantActions["q"] = {
 	NCurses.endDisplay()
 	print("Exiting.")
@@ -46,7 +50,7 @@ curs_set(0) // hide the cursor
 
 audioMonitor.registerObserver(view)
 
-audioMonitor.startListening()
+audioMonitor.startListening(sink: sink)
 
 // block
 while true {

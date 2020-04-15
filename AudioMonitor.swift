@@ -19,7 +19,7 @@ class AudioMonitor {
 	
 	private var fftConfig: kiss_fft_cfg? = nil
 	
-	init(sink: String?) {
+	func startListening(sink: String?) {
 		var sampleSpec = pa_sample_spec(format: PA_SAMPLE_S16LE, rate: UInt32(sampleRate), channels: 1)
 		var errorID: Int32 = 0
 		pulseaudio = pa_simple_new(
@@ -37,9 +37,7 @@ class AudioMonitor {
 			fputs("PulseAudio connection failed: \(String(cString: pa_strerror(errorID)))", stderr)
 			return
 		}
-	}
-	
-	func startListening() {
+		
 		initFFT()
 		
 		if self.readQueue == nil {
