@@ -158,7 +158,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			data = data.map { $0 * Float(log2(1/spectrumLowPassFactor)) }
 		}
 		
-		if data.count < self.width {
+		while data.count < self.width {
 			// make more data!
 			// interpolate between existing values
 			var newData: [Float] = []
