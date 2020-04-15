@@ -132,7 +132,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		// limit to useful frequencies
 		var data = dataIn
 		let lowFreqBound = 0
-		let highFreqBound = 6000
+		let highFreqBound = 3000
 		let highestFreqInInput = (audioMonitor?.sampleRate ?? 44100)/2
 		if dataIn.count > 0 {
 			let lowIndex = Int(Double(lowFreqBound) / Double(highestFreqInInput) * Double(data.count))
