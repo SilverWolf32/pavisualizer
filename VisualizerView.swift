@@ -7,7 +7,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	
 	public var waveform = false
 	public var waveformSolid = false
-	public var slowmode = true
+	public var slowmode = false
 	public var smoothSpectrum = false
 	public var highPassWaveform = false
 	
@@ -27,6 +27,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	private var historicalSpectrumData: [[Float]] = []
 	private var historicalWaveformData: [[Float]] = []
 	public var smoothingWindow = 8
+	public var smoothingWindowS = 32 // for extra smoothing
 	private var spectrumLowPassFactor = 0.3
 	
 	override func draw(refresh doRefresh: Bool = true) {
@@ -141,10 +142,13 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 		}
 		
 		historicalSpectrumData.append(data)
-		if historicalSpectrumData.count > smoothingWindow {
-			historicalSpectrumData.removeFirst()
-		}
-		if slowmode {
+		
+		do {
+			let s = (slowmode) ? smoothingWindowS : smoothingWindow
+			
+			while historicalSpectrumData.count > s {
+				historicalSpectrumData.removeFirst()
+			}
 			data = calculateMovingAverage(historicalSpectrumData)
 		}
 		
