@@ -73,7 +73,7 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			self.peak = !self.peak
 		}
 		
-		self.actionDescriptions["L"] = { "Toggle logarithmic" }
+		// self.actionDescriptions["L"] = { "Toggle logarithmic" }
 		self.instantActions["l"] = { [unowned self] in
 			self.logarithmic = !self.logarithmic
 		}
