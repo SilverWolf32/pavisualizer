@@ -35,6 +35,9 @@ view.instantActions["a"] = { [unowned view] in
 view.instantActions["h"] = { [unowned view] in
 	view.highPassWaveform = !view.highPassWaveform
 }
+view.instantActions["p"] = { [unowned view] in
+	view.peak = !view.peak
+}
 view.instantActions["l"] = { [unowned view] in
 	view.logarithmic = !view.logarithmic
 }
