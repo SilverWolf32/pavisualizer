@@ -22,6 +22,7 @@ view.instantActions["q"] = {
 	print("Exiting.")
 	exit(64)
 }
+view.actionDescriptions["Q"] = { "Quit" }
 
 view.audioMonitor = audioMonitor
 

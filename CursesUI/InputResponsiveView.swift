@@ -7,6 +7,7 @@ open class InputResponsiveView: View {
 	public var metaActions: [Character: () -> ()] = [:]
 	public var specialActions: [Int32: () -> ()] = [:]
 	public var metaSpecialActions: [Int32: () -> ()] = [:]
+	public var actionDescriptions: [String: () -> String] = [:]
 	
 	private var inputQueue: OperationQueue? = nil
 	

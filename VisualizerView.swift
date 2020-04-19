@@ -31,6 +31,8 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var smoothingWindowS = 32 // for extra smoothing
 	private var spectrumLowPassFactor = 0.3
 	
+	private var displayingHelp = false
+	
 	override init(height h: Int, width w: Int, y: Int, x: Int) {
 		super.init(height: h, width: w, y: y, x: x)
 		
@@ -38,29 +40,81 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	}
 	
 	func setupShortcuts() {
+		self.actionDescriptions[" "] = { "Toggle waveform" }
 		self.instantActions[" "] = { [unowned self] in
 			// self.logarithmic = !self.logarithmic
 			self.waveform = !self.waveform
 			self.draw()
 		}
+		
+		self.actionDescriptions["W"] = { "Toggle solid waveform" }
 		self.instantActions["w"] = { [unowned self] in
 			self.waveformSolid = !self.waveformSolid
 			self.draw()
 		}
+		
+		self.actionDescriptions["S"] = { "Toggle slowmode" }
 		self.instantActions["s"] = { [unowned self] in
 			self.slowmode = !self.slowmode
 		}
+		
+		self.actionDescriptions["A"] = { "Toggle spectrum smoothing [low pass]" }
 		self.instantActions["a"] = { [unowned self] in
 			self.smoothSpectrum = !self.smoothSpectrum
 		}
+		
+		// self.actionDescriptions["H"] = { "Toggle waveform high pass" }
 		self.instantActions["h"] = { [unowned self] in
 			self.highPassWaveform = !self.highPassWaveform
 		}
+		
+		self.actionDescriptions["P"] = { "Toggle instant peaks" }
 		self.instantActions["p"] = { [unowned self] in
 			self.peak = !self.peak
 		}
+		
+		self.actionDescriptions["L"] = { "Toggle logarithmic" }
 		self.instantActions["l"] = { [unowned self] in
 			self.logarithmic = !self.logarithmic
+		}
+		
+		self.actionDescriptions["?"] = { "Display this help" }
+		self.instantActions["?"] = { [unowned self] in
+			self.displayingHelp = !self.displayingHelp
+			/* self.animationQueue?.async { [unowned self] in
+				sleep(3)
+				self.displayingHelp = false
+			} */
+		}
+	}
+	
+	func displayHelp() {
+		var keys = self.actionDescriptions.keys.sorted()
+		var values = keys.map { self.actionDescriptions[$0] }
+		
+		let startLine = 0
+		let startColumn = 0
+		
+		var currentLine = startLine
+		var currentColumn = startColumn
+		var columnWidth = 0
+		while keys.count > 0 {
+			self.move(to: (currentLine, currentColumn))
+			let s = " [\(keys[0])] \(values[0]!()) "
+			keys.removeFirst()
+			values.removeFirst()
+			self.write(s)
+			
+			if s.count > columnWidth {
+				columnWidth = s.count
+			}
+			
+			currentLine += 1
+			if currentLine >= self.height - startLine {
+				// move to the next column
+				currentLine = startLine
+				currentColumn += columnWidth + 1
+			}
 		}
 	}
 	
@@ -115,6 +169,10 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 					}
 				}
 			}
+		}
+		
+		if displayingHelp {
+			displayHelp()
 		}
 		
 		if (doRefresh) {
