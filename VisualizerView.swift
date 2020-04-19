@@ -31,6 +31,39 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 	public var smoothingWindowS = 32 // for extra smoothing
 	private var spectrumLowPassFactor = 0.3
 	
+	override init(height h: Int, width w: Int, y: Int, x: Int) {
+		super.init(height: h, width: w, y: y, x: x)
+		
+		setupShortcuts()
+	}
+	
+	func setupShortcuts() {
+		self.instantActions[" "] = { [unowned self] in
+			// self.logarithmic = !self.logarithmic
+			self.waveform = !self.waveform
+			self.draw()
+		}
+		self.instantActions["w"] = { [unowned self] in
+			self.waveformSolid = !self.waveformSolid
+			self.draw()
+		}
+		self.instantActions["s"] = { [unowned self] in
+			self.slowmode = !self.slowmode
+		}
+		self.instantActions["a"] = { [unowned self] in
+			self.smoothSpectrum = !self.smoothSpectrum
+		}
+		self.instantActions["h"] = { [unowned self] in
+			self.highPassWaveform = !self.highPassWaveform
+		}
+		self.instantActions["p"] = { [unowned self] in
+			self.peak = !self.peak
+		}
+		self.instantActions["l"] = { [unowned self] in
+			self.logarithmic = !self.logarithmic
+		}
+	}
+	
 	override func draw(refresh doRefresh: Bool = true) {
 		if animationQueue == nil {
 			animationQueue = DispatchQueue.global(qos: .userInteractive)

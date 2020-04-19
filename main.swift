@@ -17,30 +17,6 @@ let view = VisualizerView()
 
 // view.smoothingWindow /= 2
 
-view.instantActions[" "] = { [unowned view] in
-	// view.logarithmic = !view.logarithmic
-	view.waveform = !view.waveform
-	view.draw()
-}
-view.instantActions["w"] = { [unowned view] in
-	view.waveformSolid = !view.waveformSolid
-	view.draw()
-}
-view.instantActions["s"] = { [unowned view] in
-	view.slowmode = !view.slowmode
-}
-view.instantActions["a"] = { [unowned view] in
-	view.smoothSpectrum = !view.smoothSpectrum
-}
-view.instantActions["h"] = { [unowned view] in
-	view.highPassWaveform = !view.highPassWaveform
-}
-view.instantActions["p"] = { [unowned view] in
-	view.peak = !view.peak
-}
-view.instantActions["l"] = { [unowned view] in
-	view.logarithmic = !view.logarithmic
-}
 view.instantActions["q"] = {
 	NCurses.endDisplay()
 	print("Exiting.")
