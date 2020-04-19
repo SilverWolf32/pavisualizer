@@ -155,7 +155,14 @@ class VisualizerView: InputResponsiveView, AudioMonitorDelegate {
 			
 			for i in 0..<data.count {
 				// is the current data higher than the old average?
-				data[i] = max(data[i], oldData[i])
+				if (oldData[i] > data[i]) {
+					// this data is higher
+					data[i] = oldData[i];
+					// overwrite all history with this peak
+					for j in 0..<historicalSpectrumData.count {
+						historicalSpectrumData[j][i] = data[i];
+					}
+				}
 			}
 		}
 		
